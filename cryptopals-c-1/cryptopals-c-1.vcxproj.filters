@@ -23,5 +23,8 @@
     <ClInclude Include="cryptopals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
