@@ -70,7 +70,6 @@ char* b64_to_bin(char* b64)
 	}
 	//convert b64 chars into binary
 	std::string b64Alpha = (std::string)b64Alphabet;
-	//int binLength = strlen(b64) * 6; //TODO: understand why it's 6 here
 	char* binInter;
 	binInter = (char*)malloc(strlen(b64) * 6 * 8 * sizeof(char));
 	int k = 0;
@@ -145,7 +144,7 @@ char* bin_to_hex(char* bin)
 	int binLength = strlen(bin);
 	int hexLength = binLength * 2;
 	char* hex;
-	hex = (char*)malloc(hexLength * sizeof(char));
+	hex = (char*)malloc((hexLength + 1) * sizeof(char));
 	int upper, lower;
 	int k = 0;
 	for (int i = 0; i < binLength; i++)
@@ -164,7 +163,7 @@ char* bin_to_b64(char* bin)
 	int padLength = (binLength % 3 != 0) ? 3 - (binLength % 3) : 0;
 	int b64Length = (int)(((binLength + 2) / 3) * 4);
 	char* b64;
-	b64 = (char*)malloc((b64Length) * sizeof(char));
+	b64 = (char*)malloc((b64Length + 1) * sizeof(char));
 	//std::cout << binLength << " " << padLength << " " << b64Length << "\n";
 	int bInter;
 	int fVals[4];
