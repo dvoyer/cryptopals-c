@@ -42,7 +42,7 @@ char* hexBufferXOR(char* buff1, char* buff2)
 	//std::cout << XORbuff << "|" << "\n";
 	return XORbuff;
 }
-
+/*
 char* breakSingleByteXOR(char* cipherText)
 {
 	int buffLen = strlen(hex_to_bin(cipherText)) + 1;

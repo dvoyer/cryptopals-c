@@ -135,7 +135,7 @@ string b64_to_bin(string b64)
 
 string bin_to_hex(string bin)
 {
-	int binLength = bin.length();
+	int binLength = strlen(bin.c_str()); // SHOULD be bin.length(), but it wasn't playing nice with the nul terminators
 	string hex;
 	int upper, lower;
 	for (int i = 0; i < binLength; i++)
@@ -185,7 +185,7 @@ string bin_to_b64(string bin)
 	}
 	return b64Out;
 }
-/*
+
 string hex_to_b64(string hex)
 {
 	return bin_to_b64(hex_to_bin(hex));
@@ -195,4 +195,3 @@ string b64_to_hex(string b64)
 {
 	return bin_to_hex(b64_to_bin(b64));
 }
-*/
