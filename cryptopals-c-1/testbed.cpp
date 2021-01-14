@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	testb64Conversion();
 	testHexConversion();
 	testExample1();
-	//testExample2();
+	testExample2();
 	//testExample3();
 	return 0;
 }
@@ -43,15 +43,15 @@ void testHexConversion()
 	printf((testData.compare(bin_to_hex(hex_to_bin(testData))) ) ? "HEX ENCODE/DECODE FAILED\n" : "hex encode/decode successful\n");
 }
 
-/*
+
 void testExample2()
 {
 	string hex1 = "1c0111001f010100061a024b53535009181c";
 	string hex2 = "686974207468652062756c6c277320657965";
 	string validate = "746865206b696420646f6e277420706c6179";
-	printf(strcmp(hexBufferXOR(hex1, hex2), validate) ? "EXAMPLE 2 FAILED\n" : "fixed xor successful\n");
+	printf(validate.compare(hexBufferXOR(hex1, hex2)) ? "EXAMPLE 2 FAILED\n" : "fixed xor successful\n");
 }
-*/
+
 //void testExample3()
 //{
 //	char testData[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";

@@ -9,13 +9,12 @@ using std::string;
 #include "conversions.h"
 
 string englishLetterFrequency = "ETAOINSRHDLUCMFYWGPBVKXQJZ"; //+32 for lower
-/*
-char* hexBufferXOR(char* buff1, char* buff2)
+
+string hexBufferXOR(string buff1, string buff2)
 {
 	try
 	{
-		//std::cout << buff1 << "|\n" << buff2 << "|\n";
-		if (strlen(buff1) != strlen(buff2))
+		if (buff1.length() != buff2.length())
 			throw(0);
 	}
 	catch (int i)
@@ -23,23 +22,18 @@ char* hexBufferXOR(char* buff1, char* buff2)
 		std::cout << "Exception in bufferXOR: buffers are not the same length\n";
 		exit(EXIT_FAILURE);
 	}
-	int buffLen = strlen(buff1) + 1;
-	char* XORbuff;
-	XORbuff = (char*)malloc(buffLen * sizeof(char));
-	//int byteLen = strlen(buff1) * sizeof(buff1[0]);
+	int buffLen = buff1.length();
+	string XORbuff;
 	for (int i = 0; i < buffLen; i += 2)
 	{
-		char ap[] = { buff1[i], buff1[i + 1], 0 };
-		char bp[] = { buff2[i], buff2[i + 1], 0 };
+		string ap = { (char)buff1[i], (char)buff1[i + 1] };
+		string bp = { (char)buff2[i], (char)buff2[i + 1]};
 		char a = hex_to_bin(ap)[0];
 		char b = hex_to_bin(bp)[0];
 		char x = (char)((int)a ^ (int)b);
-		char* heXOR = bin_to_hex(&x);
-		XORbuff[i] = heXOR[0];
-		XORbuff[i+1] = heXOR[1];
+		string heXOR = bin_to_hex(string(1, x));
+		XORbuff += heXOR;
 	}
-	XORbuff[buffLen - 1] = (char)0x00;
-	//std::cout << XORbuff << "|" << "\n";
 	return XORbuff;
 }
 /*
