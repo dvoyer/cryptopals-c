@@ -3,10 +3,13 @@
 #include <iostream>
 #include <cstdlib>
 #include <string.h>
+using std::string;
 
 //representation conversions
 #include "conversions.h"
 
+string englishLetterFrequency = "ETAOINSRHDLUCMFYWGPBVKXQJZ"; //+32 for lower
+/*
 char* hexBufferXOR(char* buff1, char* buff2)
 {
 	try
@@ -39,3 +42,18 @@ char* hexBufferXOR(char* buff1, char* buff2)
 	//std::cout << XORbuff << "|" << "\n";
 	return XORbuff;
 }
+
+char* breakSingleByteXOR(char* cipherText)
+{
+	int buffLen = strlen(hex_to_bin(cipherText)) + 1;
+	int bestGuess[] = { 0, -1 };
+	for (int i = 0; i < 256; i++)
+	{
+		std::string keyStream(buffLen, (char)i);
+		printf(keyStream.c_str());
+		printf("\n");
+	}
+
+	return cipherText;
+}
+*/
