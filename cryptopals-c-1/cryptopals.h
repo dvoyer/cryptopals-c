@@ -46,6 +46,21 @@ string hexBufferXOR(string buff1, string buff2)
 	return XORbuff;
 }
 
+string charBufferXOR(string buff1, string buff2)
+{
+	try
+	{
+		if (buff1.length() != buff2.length())
+			throw(0);
+	}
+	catch (int i)
+	{
+		std::cout << "Exception in bufferXOR: buffers are not the same length\n";
+		exit(EXIT_FAILURE);
+	}
+	return hex_to_bin(hexBufferXOR(bin_to_hex(buff1), bin_to_hex(buff2)));
+}
+
 float scoreText(string plainText)
 {
 	float score = 0;
@@ -95,4 +110,20 @@ string breakSingleByteXOR(string cipherText)
 bool detectSingleByteXOR(string cipherText)
 {
 	return (scoreText(hex_to_bin(breakSingleByteXOR(cipherText))) > 0);
+}
+
+string repeatKey(string key, int strLen)
+{
+	string rep;
+	int keyLen = key.length();
+	for (int i = 0; i < strLen; i++)
+		rep += key[i % keyLen];
+	return rep;
+}
+
+string repeatingKeyXOR(string plainText, string key)
+{
+	int strLen = plainText.length();
+	string keyStream = repeatKey(key, strLen);
+	return charBufferXOR(plainText, keyStream);
 }
