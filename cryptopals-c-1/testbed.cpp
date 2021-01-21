@@ -5,14 +5,19 @@ void testHexConversion();
 void testExample1();
 void testExample2();
 void testExample3();
+void testExample4();
+void testExample5();
 
 int main(int argc, char** argv)
 {
+	///*
 	testb64Conversion();
 	testHexConversion();
 	testExample1();
 	testExample2();
-	//testExample3();
+	testExample3();
+	testExample4(); //takes a long time
+	//*/	
 	return 0;
 }
 
@@ -52,8 +57,25 @@ void testExample2()
 	printf(validate.compare(hexBufferXOR(hex1, hex2)) ? "EXAMPLE 2 FAILED\n" : "fixed xor successful\n");
 }
 
-//void testExample3()
-//{
-//	char testData[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-//	breakSingleByteXOR(testData);
-//}
+void testExample3()
+{
+	string testData = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+	string validate = "436f6f6b696e67204d432773206c696b65206120706f756e64206f66206261636f6e";
+	printf(validate.compare(breakSingleByteXOR(testData)) ? "EXAMPLE 3 FAILED\n" : "broken single byte xor\n");
+}
+
+void testExample4()
+{
+	string validate = "4e6f77207468617420746865207061727479206973206a756d70696e670a";
+	std::ifstream input("data/4.txt");
+	string line;
+	while ( std::getline( input, line ) )
+	{
+		//std::cout << line << " - " << detectSingleByteXOR(line) << std::endl;
+		if (detectSingleByteXOR(line))
+		{
+			break;
+		}
+	}
+	printf(validate.compare(breakSingleByteXOR(line)) ? "EXAMPLE 4 FAILED\n" : "single byte xor detected\n");
+}
