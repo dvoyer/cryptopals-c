@@ -8,6 +8,19 @@ using std::string;
 string b64Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 string hexAlphabet = "0123456789abcdef";
 
+string cleanb64(string b64)
+{
+	//just to remove spaces and newlines
+	//O(n) bc I'm too lazy to optimize this
+	string clean;
+	for (int i = 0; i < b64.length(); i++)
+	{
+		if (b64[i] != '\n' && b64[i] != ' ' && b64[i] != '\r')
+			clean += b64[i];
+	}
+	return clean;
+}
+
 string hex_to_bin(string hex)
 {
 	//check for correct number of hex digits

@@ -7,6 +7,8 @@ void testExample2();
 void testExample3();
 void testExample4();
 void testExample5();
+void testHammingDistance();
+void testBreakRepeatingKeyXOR();
 void testExample6();
 
 int main(int argc, char** argv)
@@ -19,6 +21,9 @@ int main(int argc, char** argv)
 	testExample3();
 	testExample4(); //takes a long time
 	testExample5();
+	testHammingDistance();
+	testBreakRepeatingKeyXOR();
+	testExample6();
 	//*/
 	return 0;
 }
@@ -63,7 +68,8 @@ void testExample3()
 {
 	string testData = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
 	string validate = "436f6f6b696e67204d432773206c696b65206120706f756e64206f66206261636f6e";
-	printf(validate.compare(breakSingleByteXOR(testData)) ? "EXAMPLE 3 FAILED\n" : "broken single byte xor\n");
+	//std::cout << breakSingleByteXOR(hex_to_bin(testData)) << std::endl;
+	printf(hex_to_bin(validate).compare(breakSingleByteXOR(hex_to_bin(testData))) ? "EXAMPLE 3 FAILED\n" : "broken single byte xor\n");
 }
 
 void testExample4()
@@ -74,12 +80,12 @@ void testExample4()
 	while ( std::getline( input, line ) )
 	{
 		//std::cout << line << " - " << detectSingleByteXOR(line) << std::endl;
-		if (detectSingleByteXOR(line))
+		if (detectSingleByteXOR(hex_to_bin(line)))
 		{
 			break;
 		}
 	}
-	printf(validate.compare(breakSingleByteXOR(line)) ? "EXAMPLE 4 FAILED\n" : "single byte xor detected\n");
+	printf(hex_to_bin(validate).compare(breakSingleByteXOR(hex_to_bin(line))) ? "EXAMPLE 4 FAILED\n" : "single byte xor detected\n");
 }
 
 void testExample5()
@@ -89,4 +95,35 @@ void testExample5()
 	string key = "ICE";
 	//std::cout << testData << std::endl;
 	printf(validate.compare(bin_to_hex(repeatingKeyXOR(testData, key))) ? "EXAMPLE 5 FAILED\n" : "repeating key xor successful\n");
+}
+
+void testHammingDistance()
+{
+	string str1 = "this is a test";
+	string str2 = "wokka wokka!!!";
+	printf((hammingDistance(str1, str2) != 37) ? "HAMMING DISTANCE FAILED\n" : "hamming distance successful\n");
+}
+
+void testBreakRepeatingKeyXOR()
+{
+	string testData = "I feel like I'm losing hope in my body and my soul; and the sky, it looks so ominous. And as time comes to a halt, silence starts to overflow. My cries are inconspicuous.\nTell me God, are you punishing me? Is this the price I'm paying for my past mistakes? This is my redemption song. I need you more than ever right now: Can you hear me now?\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...\nAfter all the laughter fades, signs of life all washed away, I can still, still feel a gentle breeze. No matter how hard I pray, signs of warning still remain and life has become my enemy.\nTell me God, are you punishing me? Is this the price I'm paying for my past mistakes? This is my redemption song. I need you more than ever right now: Can you hear me now?\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nStill, we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I hope that someday, somehow, that I can save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...";
+	string key = "DO YOU THINK GAMES ARE SILLY LITTLE THINGS?\n> No\nYes\n";
+	string cipherText = repeatingKeyXOR(testData, key);
+	//std::cout << breakRepeatingKeyXOR(cipherText) << std::endl;
+	printf(key.compare(breakRepeatingKeyXOR(cipherText)) ? "BREAK VIGENERE FAILED\n" : "break repeating key xor successful\n");
+}
+
+void testExample6()
+{
+	string validate = "5465726d696e61746f7220583a204272696e6720746865206e6f697365";
+	std::ifstream input("data/6.txt");
+	string line;
+	string data;
+	while (std::getline(input, line))
+	{
+		data += cleanb64(line);
+	}
+	//std::cout << repeatingKeyXOR(b64_to_bin(data), breakRepeatingKeyXOR(b64_to_bin(data))) << std::endl;
+	printf(hex_to_bin(validate).compare(breakRepeatingKeyXOR(b64_to_bin(data))) ? "EXAMPLE 6 FAILED\n" : "repeating key xor broken from file\n");
+
 }
