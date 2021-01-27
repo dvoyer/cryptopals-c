@@ -2,11 +2,16 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 #include <string>
 #include <map>
 #include <fstream>
 #include <vector>
 #include <tuple>
+//#include <cryptlib.h>
+#include <openssl/bio.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
 
 using std::string;
 using std::map;
@@ -14,6 +19,7 @@ using std::vector;
 using std::tuple;
 
 //representation conversions
+#include "aes.h"
 #include "conversions.h"
 
 map<char, float> englishLetterFrequency = { {'E', 12.02}, {'T' , 9.10}, {'A' , 8.12}, {'O' , 7.68}, {'I' , 7.31},
@@ -21,11 +27,11 @@ map<char, float> englishLetterFrequency = { {'E', 12.02}, {'T' , 9.10}, {'A' , 8
 											{'L' , 3.98}, {'U' , 2.88}, {'C' , 2.71}, {'M' , 2.61}, {'F' , 2.30},
 											{'Y' , 2.11}, {'W' , 2.09}, {'G' , 2.03}, {'P' , 1.82}, {'B' , 1.49},
 											{'V' , 1.11}, {'K' , 0.69}, {'X' , 0.17}, {'Q' , 0.11}, {'J' , 0.10},
-											{'Z' , 0.07}, {'e', 12.72}, {'t' , 9.70}, {'a' , 8.72}, {'o' , 8.28}, 
-											{'i' , 7.91}, {'n' , 7.55}, {'s' , 6.88}, {'r' , 6.62}, {'h' , 6.62}, 
-											{'d' , 4.82}, {'l' , 4.48}, {'u' , 3.78}, {'c' , 3.21}, {'m' , 3.11}, 
-											{'f' , 3.10}, {'y' , 2.61}, {'w' , 2.59}, {'g' , 2.53}, {'p' , 2.32}, 
-											{'b' , 1.99}, {'v' , 1.61}, {'k' , 0.69}, {'x' , 0.10}, {'q' , 0.09}, 
+											{'Z' , 0.07}, {'e', 12.72}, {'t' , 9.70}, {'a' , 8.72}, {'o' , 8.28},
+											{'i' , 7.91}, {'n' , 7.55}, {'s' , 6.88}, {'r' , 6.62}, {'h' , 6.62},
+											{'d' , 4.82}, {'l' , 4.48}, {'u' , 3.78}, {'c' , 3.21}, {'m' , 3.11},
+											{'f' , 3.10}, {'y' , 2.61}, {'w' , 2.59}, {'g' , 2.53}, {'p' , 2.32},
+											{'b' , 1.99}, {'v' , 1.61}, {'k' , 0.69}, {'x' , 0.10}, {'q' , 0.09},
 											{'j' , 0.08}, {'z' , 0.07}, {' ' , 11.5}, {'.' , 1.43}, {'\'', 0.53},
 											{',' , 1.00}, {'?' , 0.50}, {'!' , 0.50}, {'\n', 0.50}, {'\"', 0.25},
 											{':' , 0.50}, {';' , 0.50} }; // i don't remember where this data is from

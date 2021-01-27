@@ -8,6 +8,15 @@ using std::string;
 string b64Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 string hexAlphabet = "0123456789abcdef";
 
+secure_string s_to_secureString(string inp)
+{
+	secure_string out;
+
+	for (int i = 0; i < inp.size(); i++)
+		out += (inp[i]);
+	return out;
+}
+
 string cleanb64(string b64)
 {
 	//just to remove spaces and newlines
@@ -17,6 +26,10 @@ string cleanb64(string b64)
 	{
 		if (b64[i] != '\n' && b64[i] != ' ' && b64[i] != '\r')
 			clean += b64[i];
+	}
+	if (clean.back() == '\0')
+	{
+		clean.pop_back();
 	}
 	return clean;
 }
@@ -143,6 +156,18 @@ string b64_to_bin(string b64)
 			exit(EXIT_FAILURE);
 		}
 	}
+	//int padding = (b64[b64.length() - 1] == '=' ? 0 : (b64[b64.length() - 2] == '=' ? 1 : 2));
+	//try
+	//{
+	//	if (b64.length()*0.75 - padding != strlen(binInter.c_str()))
+	//		throw(0);
+	//}
+	//catch (int i)
+	//{
+	//	printf("Exception in b64_to_bin: Zero Terminator Found\n");
+	//	std::cout << b64.length() << " " << padding << " " << strlen(binInter.c_str()) << " " << binInter.size() << std::endl;
+	//	exit(EXIT_FAILURE);
+	//}
 	return binInter;
 }
 

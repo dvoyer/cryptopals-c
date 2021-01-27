@@ -1,4 +1,5 @@
 #include "cryptopals.h"
+#include "testStrings.h"
 
 void testb64Conversion();
 void testHexConversion();
@@ -10,6 +11,10 @@ void testExample5();
 void testHammingDistance();
 void testBreakRepeatingKeyXOR();
 void testExample6();
+void testOpenSSLIntegration();
+void testECBEncryptDecrypt();
+void testExample7();
+void testExample8();
 
 int main(int argc, char** argv)
 {
@@ -19,12 +24,15 @@ int main(int argc, char** argv)
 	testExample1();
 	testExample2();
 	testExample3();
-	testExample4(); //takes a long time
+	testExample4();
 	testExample5();
 	testHammingDistance();
 	testBreakRepeatingKeyXOR();
 	testExample6();
-	//*/
+	testOpenSSLIntegration();
+	testECBEncryptDecrypt();
+	testExample7();
+	//*/	
 	return 0;
 }
 
@@ -106,7 +114,7 @@ void testHammingDistance()
 
 void testBreakRepeatingKeyXOR()
 {
-	string testData = "I feel like I'm losing hope in my body and my soul; and the sky, it looks so ominous. And as time comes to a halt, silence starts to overflow. My cries are inconspicuous.\nTell me God, are you punishing me? Is this the price I'm paying for my past mistakes? This is my redemption song. I need you more than ever right now: Can you hear me now?\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...\nAfter all the laughter fades, signs of life all washed away, I can still, still feel a gentle breeze. No matter how hard I pray, signs of warning still remain and life has become my enemy.\nTell me God, are you punishing me? Is this the price I'm paying for my past mistakes? This is my redemption song. I need you more than ever right now: Can you hear me now?\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...\n\'Cause we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I wish that some way, somehow, that I could save every one of us, but the truth is that I\'m only one girl...\nStill, we\'re gonna shout it loud, even if our words seem meaningless: it\'s like I\'m carrying the weight of the world. I hope that someday, somehow, that I can save every one of us, but the truth is that I\'m only one girl...\nMaybe if I keep believing my dreams will come to life... Come to life...";
+	string testData = WeightOfTheWorld;
 	string key = "DO YOU THINK GAMES ARE SILLY LITTLE THINGS?\n> No\nYes\n";
 	string cipherText = repeatingKeyXOR(testData, key);
 	//std::cout << breakRepeatingKeyXOR(cipherText) << std::endl;
@@ -123,7 +131,45 @@ void testExample6()
 	{
 		data += cleanb64(line);
 	}
-	//std::cout << repeatingKeyXOR(b64_to_bin(data), breakRepeatingKeyXOR(b64_to_bin(data))) << std::endl;
 	printf(hex_to_bin(validate).compare(breakRepeatingKeyXOR(b64_to_bin(data))) ? "EXAMPLE 6 FAILED\n" : "repeating key xor broken from file\n");
 
+}
+
+void testOpenSSLIntegration()
+{
+	string openSSLVersionStr = "OpenSSL 1.1.1i  8 Dec 2020";
+	printf(openSSLVersionStr.compare(OpenSSL_version(0)) ? "OPENSSL NOT INTEGRATED\n" : "openssl 1.1.1i integration verified\n");
+}
+
+void testECBEncryptDecrypt()
+{
+	unsigned char key[] = " NieR: Automata ";
+	secure_string validate = "Maybe if I keep believing my dreams will come to life... Come to life...";
+	secure_string ctext;
+	secure_string ptext = WeightOfTheWorld_s;
+	aes_ecb_encrypt(key, ptext, ctext);
+	ptext = "\0";
+	aes_ecb_decrypt(key, ctext, ptext);
+	std::cout << (validate.compare(ptext.substr(1755, 72)) ? "OPENSSL ECB ENCRYPT/DECRYPT FAILED\n" : "ecb encrypt/decrypt successful\n");
+}
+
+void testExample7()
+{
+	ERR_print_errors_fp(stderr);
+	string validate = "Come on, Come on \nPlay that funky music \n";
+	unsigned char key[] = "YELLOW SUBMARINE";
+	secure_string ctext;
+	std::ifstream input("data/7.txt");
+	string line;
+	string data;
+	while (std::getline(input, line))
+	{
+		data += cleanb64(line);
+	}
+	secure_string ptext = "\0";
+
+	ctext = clipToBlockSize(s_to_secureString(b64_to_bin(data)));
+	aes_ecb_decrypt(key, ctext, ptext);
+	string check = ptext.c_str();
+	printf(validate.compare(check.substr(2835, 41)) ? "EXAMPLE 7 FAILED\n" : "ecb decrypted from file\n");
 }
