@@ -38,5 +38,11 @@
     <ClInclude Include="vigenere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="typedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="testSet1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

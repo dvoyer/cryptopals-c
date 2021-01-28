@@ -207,3 +207,35 @@ string b64_to_hex(string b64)
 {
 	return bin_to_hex(b64_to_bin(b64));
 }
+
+secure_string s_to_secureString(string inp)
+{
+	secure_string out;
+	for (int i = 0; i < inp.size(); i++)
+		out += (inp[i]);
+	return out;
+}
+
+string secureString_to_string(secure_string inp)
+{
+	string out;
+	for (int i = 0; i < inp.size(); i++)
+		out += (inp[i]);
+	return out;
+}
+
+vector<byte> string_to_vec(string inp)
+{
+	vector<byte> out;
+	for (int i = 0; i < inp.size(); i++)
+		out.push_back(inp[i]);
+	return out;
+}
+
+secure_string vec_to_sstring(vector<byte> inp)
+{
+	secure_string out;
+	for (int i = 0; i < inp.size(); i++)
+		out.push_back(inp[i]);
+	return out;
+}

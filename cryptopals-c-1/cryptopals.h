@@ -18,6 +18,8 @@ using std::map;
 using std::vector;
 using std::tuple;
 
+//typedefs
+#include "typedefs.h"
 //representation conversions
 #include "conversions.h"
 //general utility functions

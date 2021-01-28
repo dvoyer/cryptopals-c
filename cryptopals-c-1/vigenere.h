@@ -31,7 +31,7 @@ float scoreText(string plainText)
 	return score;
 }
 
-float scoreText(vector<char> plainText)
+float scoreText(vector<byte> plainText)
 {
 	float score = 0;
 	for (int i = 0; i < plainText.size(); i++)
@@ -48,14 +48,14 @@ float scoreText(vector<char> plainText)
 	return score;
 }
 
-tuple<int, vector<char>> _breakSingleByteXOR(vector<char> cipherText)
+tuple<int, vector<byte>> _breakSingleByteXOR(vector<byte> cipherText)
 {
 	bool test = false;
 	int bestGuess[] = { 0, scoreText(cipherText) };
 	for (int i = 0; i < 256; i++)
 	{
-		vector<char> keyStream = vector<char>(cipherText.size(), i);
-		vector<char> guess = vecXOR(cipherText, keyStream);
+		vector<byte> keyStream = vector<byte>(cipherText.size(), i);
+		vector<byte> guess = vecXOR(cipherText, keyStream);
 		float score = scoreText(guess);
 		if (test && score > 0)
 		{
@@ -72,13 +72,13 @@ tuple<int, vector<char>> _breakSingleByteXOR(vector<char> cipherText)
 		system("pause");
 		std::cout << "\n\n\n";
 	}
-	return std::make_tuple(bestGuess[0], vecXOR(cipherText, vector<char>(cipherText.size(), bestGuess[0])));
+	return std::make_tuple(bestGuess[0], vecXOR(cipherText, vector<byte>(cipherText.size(), bestGuess[0])));
 }
 
 string breakSingleByteXOR(string cipherText)
 {
 	//accepts bin input
-	vector<char> intVec = std::get<1>(_breakSingleByteXOR(vector<char>(cipherText.begin(), cipherText.end())));
+	vector<byte> intVec = std::get<1>(_breakSingleByteXOR(vector<byte>(cipherText.begin(), cipherText.end())));
 	return string(intVec.begin(), intVec.end());
 }
 
@@ -111,16 +111,16 @@ int _guessKeyLength(string cipherText)
 	int keySize;
 	float editDist;
 	float cmp;
-	vector<char> cText(cipherText.begin(), cipherText.end());
-	vector<char> ch1, ch2;
+	vector<byte> cText(cipherText.begin(), cipherText.end());
+	vector<byte> ch1, ch2;
 	for (int i = 2; i < (cipherText.length() / 3); i++)
 	{
 		nBlocks = (cipherText.length() / i) - 2;
 		cmp = 0;
-		ch1 = vector<char>(cText.begin(), cText.begin() + i);
+		ch1 = vector<byte>(cText.begin(), cText.begin() + i);
 		for (int j = 0; j < nBlocks; j++)
 		{
-			ch2 = vector<char>(cText.begin() + i * (j + 1), cText.begin() + i * (j + 2));
+			ch2 = vector<byte>(cText.begin() + i * (j + 1), cText.begin() + i * (j + 2));
 			cmp += hammingDistance(ch1, ch2) / (float)i;
 		}
 		cmp /= (float)(nBlocks);
@@ -144,16 +144,16 @@ string breakRepeatingKeyXOR(string cipherText)
 		return breakSingleByteXOR(cipherText);
 	}
 	int keySize = _guessKeyLength(cipherText);
-	vector<vector<char>> blocks, trans_blocks;
+	vector<vector<byte>> blocks, trans_blocks;
 	for (int i = 0; i < (cipherText.length() / keySize) + 1; i++)
 	{
-		vector<char> block(cipherText.begin() + i * keySize, ((i + 1) * keySize > cipherText.length() ? cipherText.end() : cipherText.begin() + (i + 1) * keySize));
+		vector<byte> block(cipherText.begin() + i * keySize, ((i + 1) * keySize > cipherText.length() ? cipherText.end() : cipherText.begin() + (i + 1) * keySize));
 		blocks.push_back(block);
 	}
 	vector<char> keyString;
 	for (int i = 0; i < keySize; i++)
 	{
-		vector<char> trans_block;
+		vector<byte> trans_block;
 		for (int j = 0; j < blocks.size(); j++)
 		{
 			if (i < blocks[j].size())
