@@ -32,7 +32,8 @@ int main(int argc, char** argv)
 	testOpenSSLIntegration();
 	testECBEncryptDecrypt();
 	testExample7();
-	//*/	
+	//*/
+
 	return 0;
 }
 
@@ -172,4 +173,9 @@ void testExample7()
 	aes_ecb_decrypt(key, ctext, ptext);
 	string check = ptext.c_str();
 	printf(validate.compare(check.substr(2835, 41)) ? "EXAMPLE 7 FAILED\n" : "ecb decrypted from file\n");
+}
+
+void testExample8()
+{
+
 }
