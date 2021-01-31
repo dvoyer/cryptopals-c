@@ -128,3 +128,17 @@ bool detectECB(vector<byte> inputStream, int blkSize)
     else
         return true;
 }
+
+vector<byte> padVector(vector<byte> input, int blockSize)
+{
+    int padSize = blockSize - input.size();
+    if (padSize > 0)
+    {
+        vector<byte> out = input;
+        vector<byte> padding = string_to_vec(string(padSize, (byte)padSize));
+        out.insert(out.end(), padding.begin(), padding.end());
+        return out;
+    }
+    else
+        return input;
+}
