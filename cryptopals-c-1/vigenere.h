@@ -14,23 +14,6 @@ map<char, float> englishLetterFrequency = { {'E', 12.02}, {'T' , 9.10}, {'A' , 8
 											{',' , 1.00}, {'?' , 0.50}, {'!' , 0.50}, {'\n', 0.50}, {'\"', 0.25},
 											{':' , 0.50}, {';' , 0.50} }; // i don't remember where this data is from
 
-float scoreText(string plainText)
-{
-	float score = 0;
-	for (int i = 0; i < plainText.length(); i++)
-	{
-		if (englishLetterFrequency.find(plainText[i]) == englishLetterFrequency.end())
-		{
-			score -= 10000;
-		}
-		else
-		{
-			score += englishLetterFrequency[plainText[i]];
-		}
-	}
-	return score;
-}
-
 float scoreText(vector<byte> plainText)
 {
 	float score = 0;
@@ -48,29 +31,25 @@ float scoreText(vector<byte> plainText)
 	return score;
 }
 
+float scoreText(string plainText)
+{
+	return scoreText(string_to_vec(plainText));
+}
+
+
 tuple<int, vector<byte>> _breakSingleByteXOR(vector<byte> cipherText)
 {
-	bool test = false;
 	int bestGuess[] = { 0, scoreText(cipherText) };
 	for (int i = 0; i < 256; i++)
 	{
 		vector<byte> keyStream = vector<byte>(cipherText.size(), i);
 		vector<byte> guess = vecXOR(cipherText, keyStream);
 		float score = scoreText(guess);
-		if (test && score > 0)
-		{
-			std::cout << string(guess.begin(), guess.end()) << std::endl << " " << (char)i << " - " << score << std::endl << std::endl;
-		}
 		if (score > bestGuess[1])
 		{
 			bestGuess[0] = i;
 			bestGuess[1] = score;
 		}
-	}
-	if (test)
-	{
-		system("pause");
-		std::cout << "\n\n\n";
 	}
 	return std::make_tuple(bestGuess[0], vecXOR(cipherText, vector<byte>(cipherText.size(), bestGuess[0])));
 }
@@ -84,7 +63,6 @@ string breakSingleByteXOR(string cipherText)
 
 bool detectSingleByteXOR(string cipherText)
 {
-	//std::cout << "singleByte" << std::endl;
 	return (scoreText(breakSingleByteXOR(cipherText)) > 0);
 }
 

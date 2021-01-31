@@ -26,5 +26,5 @@ using std::tuple;
 #include "utils.h"
 //everything to break vigenere ciphers specifically
 #include "vigenere.h"
-//aes ecb/cbc encrypt/decrypt
+//aes ecb/cbc encrypt/decrypt, padding, etc.
 #include "aes.h"

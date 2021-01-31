@@ -35,19 +35,7 @@ string hexBufferXOR(string buff1, string buff2)
         std::cout << "Exception in hexBufferXOR: buffers are not the same length\n";
         exit(EXIT_FAILURE);
     }
-    int buffLen = buff1.length();
-    string XORbuff;
-    for (int i = 0; i < buffLen; i += 2)
-    {
-        string ap = { (char)buff1[i], (char)buff1[i + 1] };
-        string bp = { (char)buff2[i], (char)buff2[i + 1] };
-        char a = hex_to_bin(ap)[0];
-        char b = hex_to_bin(bp)[0];
-        char x = (char)((int)a ^ (int)b);
-        string heXOR = bin_to_hex(string(1, x));
-        XORbuff += heXOR;
-    }
-    return XORbuff;
+    return bin_to_hex(vec_to_string(vecXOR(string_to_vec(hex_to_bin(buff1)), string_to_vec(hex_to_bin(buff2)))));
 }
 
 string charBufferXOR(string buff1, string buff2)
@@ -63,8 +51,7 @@ string charBufferXOR(string buff1, string buff2)
         std::cout << "Exception in charBufferXOR: buffers are not the same length\n";
         exit(EXIT_FAILURE);
     }
-    vector<byte> XORbuff = vecXOR(vector<byte>(buff1.begin(), buff1.end()), vector<byte>(buff2.begin(), buff2.end()));
-    return string(XORbuff.begin(), XORbuff.end());
+    return vec_to_string(vecXOR(vector<byte>(buff1.begin(), buff1.end()), vector<byte>(buff2.begin(), buff2.end())));
 }
 
 int _hammingCheckBits(vector<byte> bits)
@@ -82,6 +69,12 @@ int _hammingCheckBits(vector<byte> bits)
         count += cnt;
     }
     return count;
+}
+
+int hammingDistance(secure_string str1, secure_string str2)
+{
+    vector<byte> checkBits = vecXOR(vector<byte>(str1.begin(), str1.end()), vector<byte>(str2.begin(), str2.end()));
+    return _hammingCheckBits(checkBits);
 }
 
 int hammingDistance(string str1, string str2)

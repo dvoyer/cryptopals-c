@@ -239,3 +239,11 @@ secure_string vec_to_sstring(vector<byte> inp)
 		out.push_back(inp[i]);
 	return out;
 }
+
+string vec_to_string(vector<byte> inp)
+{
+	string out;
+	for (int i = 0; i < inp.size(); i++)
+		out.push_back(inp[i]);
+	return out;
+}
