@@ -108,3 +108,8 @@ map<T, int> findDuplicates(vector<T> & inp)
     }
     return countMap;
 }
+
+void dumpVec(vector<byte> inp)
+{
+    BIO_dump_fp(stdout, (const char*)vec_to_sstring(inp).c_str(), inp.size());
+}

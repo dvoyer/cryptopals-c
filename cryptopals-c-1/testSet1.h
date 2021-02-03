@@ -108,13 +108,12 @@ void testOpenSSLIntegration()
 
 void testECBEncryptDecrypt()
 {
-	unsigned char key[] = " NieR: Automata ";
+	byte key[] = " NieR: Automata ";
 	secure_string validate = "Maybe if I keep believing my dreams will come to life... Come to life...";
-	secure_string ctext;
-	secure_string ptext = WeightOfTheWorld_s;
-	aes_ecb_encrypt(key, ptext, ctext);
-	ptext = "\0";
-	aes_ecb_decrypt(key, ctext, ptext);
+	//secure_string ctext;
+	secure_string enciphertext = WeightOfTheWorld_s;
+	secure_string ctext = aes_ecb_encrypt(key, enciphertext);
+	secure_string ptext = aes_ecb_decrypt(key, ctext);
 	std::cout << (validate.compare(ptext.substr(1755, 72)) ? "OPENSSL ECB ENCRYPT/DECRYPT FAILED\n" : "ecb encrypt/decrypt successful\n");
 }
 
@@ -131,10 +130,9 @@ void testExample7()
 	{
 		data += cleanb64(line);
 	}
-	secure_string ptext = "\0";
 
 	ctext = clipToBlockSize(s_to_secureString(b64_to_bin(data)));
-	aes_ecb_decrypt(key, ctext, ptext);
+	secure_string ptext = aes_ecb_decrypt(key, ctext);
 	string check = ptext.c_str();
 	std::cout << (validate.compare(check.substr(2835, 41)) ? "EXAMPLE 7 FAILED\n" : "ecb decrypted from file\n");
 }
