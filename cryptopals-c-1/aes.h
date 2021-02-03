@@ -5,6 +5,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include <random>
+
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/applink.c>

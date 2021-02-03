@@ -158,6 +158,19 @@ string bin_to_hex(string bin)
 	return hex;
 }
 
+secure_string bin_to_hex(secure_string bin)
+{
+	int binLength = bin.length();
+	secure_string hex;
+	int upper, lower;
+	for (int i = 0; i < binLength; i++)
+	{
+		hex += hexAlphabet[(int)((bin[i] & 240) >> 4)];
+		hex += hexAlphabet[(int)(bin[i] & 15)];
+	}
+	return hex;
+}
+
 string bin_to_b64(string bin)
 {
 	int binLength = strlen(bin.c_str()); // SHOULD be bin.length(), but it wasn't playing nice with the nul terminators
@@ -255,3 +268,17 @@ string vec_to_string(vector<byte> inp)
 		out.push_back(inp[i]);
 	return out;
 }
+
+vector<byte> byteArr_to_vec(byte* inp, int size)
+{
+	vector<byte> out;
+	for (int i = 0; i < size; i++)
+		out.push_back(inp[i]);
+	return out;
+}
+
+secure_string byteArr_to_sstring(byte* inp, int size)
+{
+	return vec_to_sstring(byteArr_to_vec(inp, size));
+}
+

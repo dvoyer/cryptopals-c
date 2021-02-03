@@ -5,6 +5,7 @@
 void testExample9();
 void testCBCEncryptDecrypt();
 void testExample10();
+void testAESKeyGen();
 void testExample11();
 
 int main(int argc, char** argv)
@@ -15,6 +16,7 @@ int main(int argc, char** argv)
 	testExample9();
 	testCBCEncryptDecrypt();
 	testExample10();
+	testAESKeyGen();
 	return 0;
 }
 
@@ -56,4 +58,15 @@ void testExample10()
 	secure_string ptext = aes_cbc_decrypt(key, IV, ctext);
 	string check = ptext.c_str();
 	std::cout << (validate.compare(check.substr(2835, 41)) ? "EXAMPLE 10 FAILED\n" : "cbc decrypted from file\n");
+}
+
+void testAESKeyGen()
+{
+	byte KEY1[KEY_SIZE];
+	RAND_bytes(KEY1, KEY_SIZE);
+	auto k1 = byteArr_to_sstring(KEY1, KEY_SIZE);
+	byte KEY2[KEY_SIZE];
+	RAND_bytes(KEY2, KEY_SIZE);
+	auto k2 = byteArr_to_sstring(KEY2, KEY_SIZE);
+	std::cout << (k1.compare(k2) ? "generated random AES key\n" : "RANDOM KEY GENERATION FAILED\n");
 }
