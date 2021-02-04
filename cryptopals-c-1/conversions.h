@@ -171,6 +171,19 @@ secure_string bin_to_hex(secure_string bin)
 	return hex;
 }
 
+secure_string bin_to_hex(vector<byte> bin)
+{
+	int binLength = bin.size();
+	secure_string hex;
+	int upper, lower;
+	for (int i = 0; i < binLength; i++)
+	{
+		hex += hexAlphabet[(int)((bin[i] & 240) >> 4)];
+		hex += hexAlphabet[(int)(bin[i] & 15)];
+	}
+	return hex;
+}
+
 string bin_to_b64(string bin)
 {
 	int binLength = strlen(bin.c_str()); // SHOULD be bin.length(), but it wasn't playing nice with the nul terminators

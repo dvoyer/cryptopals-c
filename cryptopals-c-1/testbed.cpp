@@ -7,16 +7,18 @@ void testCBCEncryptDecrypt();
 void testExample10();
 void testAESKeyGen();
 void testExample11();
+void testExample12();
 
 int main(int argc, char** argv)
 {
 	///*
 	testSet1();
-	//*/
 	testExample9();
 	testCBCEncryptDecrypt();
 	testExample10();
+	//*/
 	testAESKeyGen();
+	testExample11();
 	return 0;
 }
 
@@ -69,4 +71,33 @@ void testAESKeyGen()
 	RAND_bytes(KEY2, KEY_SIZE);
 	auto k2 = byteArr_to_sstring(KEY2, KEY_SIZE);
 	std::cout << (k1.compare(k2) ? "generated random AES key\n" : "RANDOM KEY GENERATION FAILED\n");
+}
+
+void testExample11()
+{
+	if (ECB_or_CBC(&scramble_CBC) != 1)
+	{
+		std::cout << "EXAMPLE 11 FAILED (scramble_CBC)\n";
+	}
+	else if(ECB_or_CBC(&scramble_ECB) != 0)
+	{
+		std::cout << "EXAMPLE 11 FAILED (scramble_ECB)\n";
+	}
+	else
+	{
+		try
+		{
+			for (int i = 1; i < 100; i++)
+			{
+				if (_CH11_checkVal != ECB_or_CBC(&_CH11_encryptionOracle))
+					throw(0);
+				_CH11_checkVal = -1;
+			}
+			std::cout << "detected ecb/cbc from random oracle" << std::endl;
+		}
+		catch(int i)
+		{
+			std::cout << "EXAMPLE 11 FAILED (challenge)\n";
+		}
+	}
 }

@@ -113,3 +113,27 @@ void dumpVec(vector<byte> inp)
 {
     BIO_dump_fp(stdout, (const char*)vec_to_sstring(inp).c_str(), inp.size());
 }
+
+vector<byte> _CH11_randXPend(vector<byte> inp, int premin, int premax, int postmin, int postmax)
+{
+    byte rByte;
+    int prepend;
+    int append;
+    vector<byte> out;
+    RAND_bytes(&rByte, 1);
+    prepend = (unsigned int)rByte % (premax - premin + 1) + premin;
+    RAND_bytes(&rByte, 1);
+    append = (unsigned int)rByte % (postmax - postmin + 1) + premin;
+    for (int i = 0; i < prepend; i++)
+    {
+        RAND_bytes(&rByte, 1);
+        out.push_back(rByte);
+    }
+    out.insert(out.end(), inp.begin(), inp.end());
+    for (int i = 0; i < append; i++)
+    {
+        RAND_bytes(&rByte, 1);
+        out.push_back(rByte);
+    }
+    return out;
+}

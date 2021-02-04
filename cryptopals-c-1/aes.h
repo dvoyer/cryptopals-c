@@ -5,12 +5,6 @@
 #include <limits>
 #include <stdexcept>
 
-#include <random>
-
-#include <openssl/evp.h>
-#include <openssl/rand.h>
-#include <openssl/applink.c>
-
 static const unsigned int KEY_SIZE = 16;
 static const unsigned int BLOCK_SIZE = 16;
 
@@ -239,4 +233,28 @@ vector<byte> aes_cbc_encrypt(const byte key[KEY_SIZE], const byte arrIV[BLOCK_SI
 secure_string aes_cbc_encrypt(const byte key[KEY_SIZE], const byte arrIV[BLOCK_SIZE], secure_string ptext)
 {
     return vec_to_sstring(aes_cbc_encrypt(key, arrIV, sstring_to_vec(ptext)));
+}
+
+secure_string scramble_ECB(secure_string input)
+{
+    byte KEY[KEY_SIZE];
+    RAND_bytes(KEY, KEY_SIZE);
+    return aes_ecb_encrypt(KEY, input);
+}
+
+secure_string scramble_CBC(secure_string input)
+{
+    byte KEY[KEY_SIZE];
+    RAND_bytes(KEY, KEY_SIZE);
+    byte IV[BLOCK_SIZE];
+    RAND_bytes(IV, BLOCK_SIZE);
+    return aes_cbc_encrypt(KEY, IV, input);
+}
+
+int ECB_or_CBC(secure_string(*f)(secure_string input))
+{
+    // returns 1 if cbc, 0 if ecb
+    secure_string testData(10 * BLOCK_SIZE, (char)90);
+    secure_string encrypted = (*f)(testData);
+    return (int)!detectECB(sstring_to_vec(encrypted), BLOCK_SIZE);
 }
