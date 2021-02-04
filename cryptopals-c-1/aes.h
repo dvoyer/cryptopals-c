@@ -18,7 +18,7 @@ void _aes_ecb_encrypt(const byte key[KEY_SIZE], const secure_string& ptext, secu
         throw std::runtime_error("EVP_EncryptInit_ex failed");
 
     if (!padding)
-        EVP_CIPHER_CTX_set_padding(&*ctx, 0);
+        EVP_CIPHER_CTX_set_padding(ctx.get(), 0);
 
     // Recovered text expands upto BLOCK_SIZE
     ctext.resize(ptext.size() + BLOCK_SIZE);
@@ -64,7 +64,7 @@ void _aes_ecb_decrypt(const byte key[KEY_SIZE], const secure_string& ctext, secu
             throw std::runtime_error("EVP_DecryptInit_ex failed");
 
         if (!padding)
-            EVP_CIPHER_CTX_set_padding(&*ctx, 0);
+            EVP_CIPHER_CTX_set_padding(ctx.get(), 0);
         // Recovered text contracts upto BLOCK_SIZE
         rtext.resize(ctext.size());
         int out_len1 = (int)rtext.size();
@@ -254,7 +254,7 @@ secure_string scramble_CBC(secure_string input)
 int ECB_or_CBC(secure_string(*f)(secure_string input))
 {
     // returns 1 if cbc, 0 if ecb
-    secure_string testData(10 * BLOCK_SIZE, (char)90);
+    secure_string testData(10 * BLOCK_SIZE, (char)83);
     secure_string encrypted = (*f)(testData);
     return (int)!detectECB(sstring_to_vec(encrypted), BLOCK_SIZE);
 }
