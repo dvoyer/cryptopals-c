@@ -152,6 +152,28 @@ vector<vector<byte>> chunkify(vector<byte> inStream, int blkSize)
     return outStream;
 }
 
+int firstDiffChunk(vector<byte> in1, vector<byte> in2, int blkSize)
+{
+    vector<vector<byte>> chunks1 = chunkify(in1, blkSize);
+    vector<vector<byte>> chunks2 = chunkify(in1, blkSize);
+    try
+    {
+        if (chunks1.size() != chunks2.size())
+            throw(0);
+    }
+    catch (int i)
+    {
+        printf("Exception in firstDiffChunk: inputs are not the same size\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < chunks1.size(); i++)
+    {
+        if (chunks1[i] == chunks2[i])
+            return i * blkSize;
+    }
+    return -1;
+}
+
 vector<byte> dechunkify(vector<vector<byte>> input)
 {
     vector<byte> out;
@@ -185,6 +207,11 @@ vector<byte> padVector(vector<byte> input, int blockSize)
     }
     else
         return input;
+}
+
+secure_string padSString(secure_string input, int blockSize)
+{
+    return vec_to_sstring(padVector(sstring_to_vec(input), blockSize));
 }
 
 vector<byte> aes_cbc_decrypt(const byte key[KEY_SIZE], const byte arrIV[BLOCK_SIZE], vector<byte> ctext)
@@ -251,10 +278,10 @@ secure_string scramble_CBC(secure_string input)
     return aes_cbc_encrypt(KEY, IV, input);
 }
 
-int ECB_or_CBC(secure_string(*f)(secure_string input))
+int ECB_or_CBC(secure_string(*f)(secure_string input), int blkSize=BLOCK_SIZE)
 {
     // returns 1 if cbc, 0 if ecb
-    secure_string testData(10 * BLOCK_SIZE, (char)83);
+    secure_string testData(10 * blkSize, (char)83);
     secure_string encrypted = (*f)(testData);
-    return (int)!detectECB(sstring_to_vec(encrypted), BLOCK_SIZE);
+    return (int)!detectECB(sstring_to_vec(encrypted), blkSize);
 }

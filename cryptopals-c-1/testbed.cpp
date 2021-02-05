@@ -8,17 +8,20 @@ void testExample10();
 void testAESKeyGen();
 void testExample11();
 void testExample12();
+void testExample13();
 
 int main(int argc, char** argv)
 {
+	RAND_bytes(GLOBAL_AES_KEY, KEY_SIZE);
 	///*
 	testSet1();
 	testExample9();
 	testCBCEncryptDecrypt();
 	testExample10();
-	//*/
 	testAESKeyGen();
 	testExample11();
+	//*/
+	testExample12();
 	return 0;
 }
 
@@ -100,4 +103,11 @@ void testExample11()
 			std::cout << "EXAMPLE 11 FAILED (challenge)\n";
 		}
 	}
+}
+
+void testExample12()
+{
+	secure_string validate = "Rollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n";
+	secure_string test = breakAppendedECB(&_CH12_encryptionOracle);
+	std::cout << (validate.compare(test) ? "EXAMPLE 12 FAILED\n" : "appended ecb broken from oracle\n");
 }

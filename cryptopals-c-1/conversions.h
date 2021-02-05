@@ -224,6 +224,47 @@ string bin_to_b64(string bin)
 	return b64Out;
 }
 
+secure_string bin_to_b64(secure_string bin)
+{
+	int binLength = bin.length(); // SHOULD be bin.length(), but it wasn't playing nice with the nul terminators
+	int padLength = (binLength % 3 != 0) ? 3 - (binLength % 3) : 0;
+	secure_string b64Out = "";
+	int bInter;
+	int maxLoop = (padLength != 0) ? binLength + padLength - 3 : binLength;
+	for (int i = 0; i < maxLoop; i += 3)
+	{
+		bInter = (bin[i] << 16) + (bin[i + 1] << 8) + bin[i + 2];
+		//printf("%i ", bInter);
+		b64Out += b64Alphabet[(bInter & 16515072) >> 18];	// 111111000000000000000000
+		b64Out += b64Alphabet[(bInter & 258048) >> 12];		// 000000111111000000000000
+		b64Out += b64Alphabet[(bInter & 4032) >> 6];		// 000000000000111111000000
+		b64Out += b64Alphabet[(bInter & 63)];				// 000000000000000000111111
+	}
+	if (padLength != 0)
+	{
+		if (padLength == 2)
+		{
+			//one extra
+			bInter = bin[binLength - 1] << 4;
+			b64Out += b64Alphabet[(bInter & 4032) >> 6];		// 000000000000111111000000
+			b64Out += b64Alphabet[(bInter & 63)];				// 000000000000000000111111
+			b64Out += "==";
+		}
+		else
+		{
+			//two extra
+			bInter = (bin[binLength - 2] << 16) + (bin[binLength - 1] << 8);
+			b64Out += b64Alphabet[(bInter & 16515072) >> 18];	// 111111000000000000000000
+			b64Out += b64Alphabet[(bInter & 258048) >> 12];		// 000000111111000000000000
+			b64Out += b64Alphabet[(bInter & 4032) >> 6];		// 000000000000111111000000
+			b64Out += "=";
+		}
+		//std::cout << k << "\n";
+	}
+	return b64Out;
+}
+
+
 string hex_to_b64(string hex)
 {
 	return bin_to_b64(hex_to_bin(hex));
