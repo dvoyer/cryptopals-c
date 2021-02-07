@@ -158,6 +158,7 @@
     <ClInclude Include="aes.h" />
     <ClInclude Include="conversions.h" />
     <ClInclude Include="cryptopals.h" />
+    <ClInclude Include="oracles.h" />
     <ClInclude Include="testSet1.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="utils.h" />

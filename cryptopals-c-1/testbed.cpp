@@ -12,7 +12,9 @@ void testExample13();
 
 int main(int argc, char** argv)
 {
-	RAND_bytes(GLOBAL_AES_KEY, KEY_SIZE);
+	//generate a random AES key
+	if(randomizeKey)
+		RAND_bytes(GLOBAL_AES_KEY, KEY_SIZE);
 	///*
 	testSet1();
 	testExample9();

@@ -44,5 +44,8 @@
     <ClInclude Include="testSet1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="oracles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
