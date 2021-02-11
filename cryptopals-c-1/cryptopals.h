@@ -82,3 +82,76 @@ secure_string breakAppendedECB(secure_string(*cipher)(secure_string input))
 	//but it's consistent, so i can account for it here.
 	return out.substr(0, out.size() - 1);
 }
+
+secure_string ECB_CutAndPaste(secure_string(*cipher_in)(secure_string input), secure_string targetInput, secure_string targetText, int bytesToChop)
+{
+	// detect block size
+	int blkSize, j = 0;
+	int minSize = staticGenerator(cipher_in, "").size();
+	while (staticGenerator(cipher_in, secure_string(j, (char)83)).size() == minSize)
+		j++;
+	blkSize = staticGenerator(cipher_in, secure_string(j, (char)83)).size() - minSize;
+	try
+	{
+		if (targetText.size() > blkSize)
+			throw(0);
+	}
+	catch (int e)
+	{
+		std::cout << "Exception in ECB_CutAndPaste: this implementation can only cut-and-paste a maximum of " << blkSize << " bytes." << std::endl;
+		return "";
+	}
+	// detect ECB
+	try
+	{
+		// ECB_or_CBC returns 0 if ECB
+		if (ECB_or_CBC(cipher_in, blkSize))
+			throw(0);
+	}
+	catch (int e)
+	{
+		std::cout << "Exception in ECB_CutAndPaste: input is not ECB" << std::endl;
+		return "";
+	}
+	// find the first changing block
+	int first_block;
+	auto baseChunks = chunkify(sstring_to_vec(staticGenerator(cipher_in, targetInput)), blkSize);
+	auto np1Chunks = chunkify(sstring_to_vec(staticGenerator(cipher_in, targetInput + secure_string(1, (char)83))), blkSize);
+	for (first_block = 0; first_block < baseChunks.size(); first_block++)
+	{
+		if (vec_to_sstring(baseChunks[first_block]).compare(vec_to_sstring(np1Chunks[first_block])) != 0)
+			break;
+	}
+	//std::cout << first_block << std::endl;
+	//pad the first blocks to make them static
+	int padLengthFront;
+	for (padLengthFront = 0; padLengthFront < 1000; padLengthFront++)
+	{
+		auto baseString = staticGenerator(cipher_in, targetInput + secure_string(padLengthFront, (char)83));
+		auto np1String = staticGenerator(cipher_in, targetInput + secure_string(padLengthFront + 1, (char)83));
+		if (baseString.substr(0, (first_block + 1) * blkSize).compare(np1String.substr(0, (first_block + 1) * blkSize)) == 0)
+			break;
+	}
+	//std::cout << padLengthFront << std::endl;
+	//generate the payload
+	auto payload = padSString(targetText, blkSize);
+	auto ECBed = chunkify(sstring_to_vec(staticGenerator(cipher_in, targetInput + secure_string(padLengthFront, (char)83) + payload)), blkSize);
+	auto encryptedPayload = vec_to_sstring(ECBed[first_block + 1]);
+	//find the length the input needs to be padded to to chop off the last bytesToChop bytes
+	int padLengthBack = 0;
+	auto baseString = staticGenerator(cipher_in, targetInput + secure_string(padLengthFront, (char)83) + secure_string(padLengthBack, (char)83));
+	int baseSize = baseString.size();
+	for (padLengthBack = 1; padLengthBack < blkSize * 2; padLengthBack++)
+	{
+		//auto np1String = staticGenerator(cipher_in, targetInput + secure_string(padLengthFront + 1, (char)83));
+		if (baseSize < staticGenerator(cipher_in, targetInput + secure_string(padLengthFront, (char)83) + secure_string(padLengthBack, (char)83)).size())
+			break;
+	}
+	auto finalPayload = secure_string(padLengthFront, (char)83) + secure_string(padLengthBack + bytesToChop, (char)83) + targetInput;
+	//std::cout << finalPayload << std::endl;
+	auto finalEncrypted = staticGenerator(cipher_in, finalPayload);
+	auto finalVec = chunkify(sstring_to_vec(finalEncrypted), blkSize);
+	finalVec.pop_back();
+	auto finalString = vec_to_sstring(dechunkify(finalVec)) + encryptedPayload;
+	return finalString;
+}

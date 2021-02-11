@@ -264,7 +264,6 @@ secure_string bin_to_b64(secure_string bin)
 	return b64Out;
 }
 
-
 string hex_to_b64(string hex)
 {
 	return bin_to_b64(hex_to_bin(hex));
@@ -274,6 +273,8 @@ string b64_to_hex(string b64)
 {
 	return bin_to_hex(b64_to_bin(b64));
 }
+
+//TODO: figure out how to make these all implicit and not have to call it constantly
 
 secure_string s_to_secureString(string inp)
 {

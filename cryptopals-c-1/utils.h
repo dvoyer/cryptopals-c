@@ -137,3 +137,47 @@ vector<byte> _CH11_randXPend(vector<byte> inp, int premin, int premax, int postm
     }
     return out;
 }
+
+vector<tuple<string, string>> kvParse(string cookie)
+{
+    vector<tuple<string, string>> parsed;
+    size_t pos = 0;
+    string working = cookie, token;
+    int i = 0;
+    while ((pos = working.find('&')) != string::npos)
+    {
+        token = working.substr(0, pos);
+        parsed.push_back(tuple<string, string>(token.substr(0, token.find('=')), token.substr(token.find('=') + 1, token.length())));
+        //std::cout << std::get<0>(parsed[i]) << ": " << std::get<1>(parsed[i]) << std::endl;
+        working.erase(0, pos + 1);
+        i++;
+    }
+    //one more
+    token = working;
+    parsed.push_back(tuple<string, string>(token.substr(0, token.find('=')), token.substr(token.find('=') + 1, token.length())));
+    //std::cout << std::get<0>(parsed[i]) << ": " << std::get<1>(parsed[i]) << std::endl;
+    return parsed;
+}
+
+vector<tuple<string, string>> kvParse(secure_string cookie)
+{
+    return kvParse(secureString_to_string(cookie));
+}
+
+secure_string staticGenerator(secure_string(*cipher)(secure_string inp), secure_string input)
+{
+    // probably converts a generator that is of indeterminate length into one of maximum length
+    secure_string maxLenText = cipher(input);
+    int maxSize = maxLenText.size();
+
+    for (int i = 0; i < 500; i++)
+    {
+        secure_string ctext_test = cipher(input);
+        if (ctext_test.size() > maxSize)
+        {
+            maxLenText = ctext_test;
+            maxSize = ctext_test.size();
+        }
+    }
+    return maxLenText;
+}

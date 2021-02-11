@@ -22,8 +22,9 @@ int main(int argc, char** argv)
 	testExample10();
 	testAESKeyGen();
 	testExample11();
-	//*/
 	testExample12();
+	//*/
+	testExample13(); // takes a long time
 	return 0;
 }
 
@@ -75,7 +76,7 @@ void testAESKeyGen()
 	byte KEY2[KEY_SIZE];
 	RAND_bytes(KEY2, KEY_SIZE);
 	auto k2 = byteArr_to_sstring(KEY2, KEY_SIZE);
-	std::cout << (k1.compare(k2) ? "generated random AES key\n" : "RANDOM KEY GENERATION FAILED\n");
+	std::cout << (k1.compare(k2) ? "generated random aes key\n" : "RANDOM KEY GENERATION FAILED\n");
 }
 
 void testExample11()
@@ -112,4 +113,21 @@ void testExample12()
 	secure_string validate = "Rollin' in my 5.0\nWith my rag-top down so my hair can blow\nThe girlies on standby waving just to say hi\nDid you stop? No, I just drove by\n";
 	secure_string test = breakAppendedECB(&_CH12_encryptionOracle);
 	std::cout << (validate.compare(test) ? "EXAMPLE 12 FAILED\n" : "appended ecb broken from oracle\n");
+}
+
+void testExample13()
+{
+	//because this is probabilistic, i'm testing it probabilistically 
+	//randomly choosing a 1 byte number has a ~60% chance of being three digits
+	//test this 20 times, if 11+ work, we're good
+	int successes = 0;
+	for (int i = 0; i < 20; i++)
+	{
+		secure_string output = ECB_CutAndPaste(&_CH13_helper, "dmv@dianavoyer.com", "admin", 4);
+		successes += _CH13_detectAdmin(aes_ecb_decrypt(GLOBAL_AES_KEY, output));
+		if (successes > 10)
+			break;
+		//std::cout <<  << std::endl;
+	}
+	std::cout << (successes < 10 ? "EXAMPLE 13 FAILED\n" : "ecb cut-and-paste successful\n");
 }
